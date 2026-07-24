@@ -17,6 +17,7 @@
     stats: document.getElementById("c-stats"),
     subs: document.getElementById("stat-subs"),
     posts: document.getElementById("stat-posts"),
+    active: document.getElementById("stat-active"),
   };
 
   const copyBtn = document.getElementById("btn-copy");
@@ -107,9 +108,14 @@
     if (view.icon) paintIcon(els.icon, view.icon);
     if (view.banner) paintBanner(view.icon, view.banner, instant);
 
-    if (typeof view.subscribers === "number" || typeof view.posts === "number") {
+    if (
+      typeof view.subscribers === "number" ||
+      typeof view.posts === "number" ||
+      typeof view.activeWeek === "number"
+    ) {
       if (els.subs && typeof view.subscribers === "number") els.subs.textContent = nf.format(view.subscribers);
       if (els.posts && typeof view.posts === "number") els.posts.textContent = nf.format(view.posts);
+      if (els.active && typeof view.activeWeek === "number") els.active.textContent = nf.format(view.activeWeek);
       if (els.stats) els.stats.hidden = false;
     }
   }
@@ -140,6 +146,7 @@
       banner: c.banner || null,
       subscribers: typeof n.subscribers === "number" ? n.subscribers : null,
       posts: typeof n.posts === "number" ? n.posts : null,
+      activeWeek: typeof n.users_active_week === "number" ? n.users_active_week : null,
     };
   }
 
