@@ -18,6 +18,7 @@
     subs: document.getElementById("stat-subs"),
     posts: document.getElementById("stat-posts"),
     active: document.getElementById("stat-active"),
+    activeWindow: document.getElementById("active-window"),
   };
 
   const copyBtn = document.getElementById("btn-copy");
@@ -104,19 +105,26 @@
     img.src = safe;
   }
 
+  let activeData = null;
+  function updateActive() {
+    if (!els.active || !els.activeWindow || !activeData) return;
+    const v = activeData[els.activeWindow.value];
+    if (typeof v === "number") els.active.textContent = nf.format(v);
+  }
+  if (els.activeWindow) els.activeWindow.addEventListener("change", updateActive);
+
   function render(view, instant) {
     if (view.icon) paintIcon(els.icon, view.icon);
     if (view.banner) paintBanner(view.icon, view.banner, instant);
 
-    if (
-      typeof view.subscribers === "number" ||
-      typeof view.posts === "number" ||
-      typeof view.activeWeek === "number"
-    ) {
-      if (els.subs && typeof view.subscribers === "number") els.subs.textContent = nf.format(view.subscribers);
-      if (els.posts && typeof view.posts === "number") els.posts.textContent = nf.format(view.posts);
-      if (els.active && typeof view.activeWeek === "number") els.active.textContent = nf.format(view.activeWeek);
-      if (els.stats) els.stats.hidden = false;
+    if (els.subs && typeof view.subscribers === "number") els.subs.textContent = nf.format(view.subscribers);
+    if (els.posts && typeof view.posts === "number") els.posts.textContent = nf.format(view.posts);
+    if (view.active) {
+      activeData = view.active;
+      updateActive();
+    }
+    if (els.stats && (typeof view.subscribers === "number" || typeof view.posts === "number" || view.active)) {
+      els.stats.hidden = false;
     }
   }
 
@@ -146,7 +154,12 @@
       banner: c.banner || null,
       subscribers: typeof n.subscribers === "number" ? n.subscribers : null,
       posts: typeof n.posts === "number" ? n.posts : null,
-      activeWeek: typeof n.users_active_week === "number" ? n.users_active_week : null,
+      active: {
+        day: typeof n.users_active_day === "number" ? n.users_active_day : null,
+        week: typeof n.users_active_week === "number" ? n.users_active_week : null,
+        month: typeof n.users_active_month === "number" ? n.users_active_month : null,
+        half_year: typeof n.users_active_half_year === "number" ? n.users_active_half_year : null,
+      },
     };
   }
 
