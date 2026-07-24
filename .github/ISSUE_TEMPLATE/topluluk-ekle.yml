@@ -1,5 +1,5 @@
 name: Topluluk ekle
-description: Türkçe bir Lemmy topluluğunu dizine ekle. Onaylanınca otomatik PR açılır.
+description: Dizine Türkçe bir Lemmy topluluğu ekle.
 title: "Topluluk: "
 labels: ["topluluk-ekle"]
 body:
@@ -11,7 +11,7 @@ body:
     id: handle
     attributes:
       label: Topluluk adresi
-      description: "`isim@instance` biçiminde yaz. Örnek: `anatolia@lemmy.world`"
+      description: "`isim@instance` biçiminde yaz."
       placeholder: isim@instance.tld
     validations:
       required: true
@@ -20,7 +20,7 @@ body:
     attributes:
       label: Görünen isim
       description: Boş bırakırsan topluluğun Lemmy'deki kendi adı kullanılır.
-      placeholder: Anatolia
+      placeholder: Topluluk adı
     validations:
       required: false
   - type: textarea
@@ -28,7 +28,7 @@ body:
     attributes:
       label: Açıklama
       description: Topluluğu bir iki cümleyle anlat (opsiyonel).
-      placeholder: Türkiye ve Anadolu üzerine genel sohbet topluluğu.
+      placeholder: Topluluğun kısa açıklaması
     validations:
       required: false
   - type: checkboxes

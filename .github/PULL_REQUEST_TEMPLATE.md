@@ -1,10 +1,10 @@
-## Community
+## Topluluk
 
-- **Handle:**
+- **Adres:**
 
-## Checklist
+## Kontrol listesi
 
-- [ ] I added a single file under `communities/` (no other files changed).
-- [ ] The `handle` is in `name@instance.tld` format.
-- [ ] The community is Turkish (or Turkey-related) and actually exists.
-- [ ] `node build.js` runs without errors.
+- [ ] `communities/` altına tek bir dosya ekledim (başka dosya değişmedi).
+- [ ] `handle` alanı `isim@instance.tld` biçiminde.
+- [ ] Topluluk Türkçe (ya da Türkiye ile ilgili) ve gerçekten var.
+- [ ] `node build.js` hatasız çalışıyor.
