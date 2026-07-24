@@ -33,7 +33,7 @@ function parseHandle(handle, file) {
   if (!match) {
     fail(`${file}: geçersiz handle "${handle}". Beklenen biçim: isim@instance.tld`);
   }
-  const name = match[1].toLowerCase();
+  const name = match[1];
   const instance = match[2].toLowerCase();
   return {
     name,
@@ -79,7 +79,7 @@ function loadCommunities() {
     const name = (data.name ? String(data.name).trim().slice(0, 80) : "") || parsed.name;
     const description = data.description ? String(data.description).trim().slice(0, 500) : "";
 
-    return { ...parsed, cname: parsed.name, name, description };
+    return { ...parsed, cname: parsed.name.toLowerCase(), name, description };
   });
 
   const nameCount = new Map();
