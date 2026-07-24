@@ -1,4 +1,4 @@
-name: Issue to PR
+name: Add community
 
 on:
   issues:
@@ -6,11 +6,14 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
   issues: write
 
+concurrency:
+  group: add-community
+  cancel-in-progress: false
+
 jobs:
-  create-pr:
+  add:
     if: github.event.label.name == 'onaylandı'
     runs-on: ubuntu-latest
     steps:
@@ -29,26 +32,31 @@ jobs:
       - name: Validate build
         run: node build.js
 
-      - name: Open pull request
+      - name: Commit to main
         env:
-          GH_TOKEN: ${{ github.token }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
           SLUG: ${{ steps.parse.outputs.slug }}
           HANDLE: ${{ steps.parse.outputs.handle }}
         run: |
           set -euo pipefail
-          branch="community/${SLUG}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git checkout -b "$branch"
           git add "communities/${SLUG}.json"
-          git commit -m "feat(community): add ${HANDLE}"
-          git push -f origin "$branch"
-          if ! gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" \
-              --title "feat(community): add ${HANDLE}" \
-              --body "Closes #${ISSUE_NUMBER}. Bu PR topluluk ekleme formundan otomatik oluşturuldu."; then
-            gh pr edit "$branch" --body "Closes #${ISSUE_NUMBER}. Bu PR topluluk ekleme formundan otomatik güncellendi."
+          if git diff --cached --quiet; then
+            echo "Zaten mevcut, değişiklik yok."
+          else
+            git commit -m "feat(community): add ${HANDLE}"
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
+
+      - name: Comment and close the issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          HANDLE: ${{ steps.parse.outputs.handle }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "\`${HANDLE}\` dizine eklendi. Teşekkürler!"
+          gh issue close "$ISSUE_NUMBER" --reason completed || true
 
       - name: Report failure on the issue
         if: failure()
@@ -56,4 +64,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          gh issue comment "$ISSUE_NUMBER" --body "Otomatik ekleme başarısız oldu. Lütfen **Topluluk adresi** alanının \`isim@instance.tld\` biçiminde olduğundan emin ol (örn. \`anatolia@lemmy.world\`) ve formu düzenle."
+          gh issue comment "$ISSUE_NUMBER" --body "Otomatik ekleme başarısız oldu. **Topluluk adresi** alanının \`isim@instance.tld\` biçiminde olduğundan emin ol."

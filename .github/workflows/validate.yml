@@ -1,7 +1,8 @@
 name: Validate
 
 on:
-  pull_request:
+  push:
+    branches: [main]
     paths:
       - "communities/**"
       - "src/**"
