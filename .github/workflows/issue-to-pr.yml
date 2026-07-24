@@ -1,0 +1,59 @@
+name: Issue to PR
+
+on:
+  issues:
+    types: [labeled]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  create-pr:
+    if: github.event.label.name == 'onaylandı'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Parse issue form into a community file
+        id: parse
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+        run: node .github/scripts/issue-to-community.mjs
+
+      - name: Validate build
+        run: node build.js
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          SLUG: ${{ steps.parse.outputs.slug }}
+          HANDLE: ${{ steps.parse.outputs.handle }}
+        run: |
+          set -euo pipefail
+          branch="community/${SLUG}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add "communities/${SLUG}.json"
+          git commit -m "feat(community): add ${HANDLE}"
+          git push -f origin "$branch"
+          if ! gh pr create --base "${{ github.event.repository.default_branch }}" --head "$branch" \
+              --title "feat(community): add ${HANDLE}" \
+              --body "Closes #${ISSUE_NUMBER}. Bu PR topluluk ekleme formundan otomatik oluşturuldu."; then
+            gh pr edit "$branch" --body "Closes #${ISSUE_NUMBER}. Bu PR topluluk ekleme formundan otomatik güncellendi."
+          fi
+
+      - name: Report failure on the issue
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          gh issue comment "$ISSUE_NUMBER" --body "Otomatik ekleme başarısız oldu. Lütfen **Topluluk adresi** alanının \`isim@instance.tld\` biçiminde olduğundan emin ol (örn. \`anatolia@lemmy.world\`) ve formu düzenle."

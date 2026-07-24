@@ -1,0 +1,40 @@
+name: Topluluk ekle
+description: Türkçe bir Lemmy topluluğunu dizine ekle. Onaylanınca otomatik PR açılır.
+title: "Topluluk: "
+labels: ["topluluk-ekle"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Topluluğunu dizine eklemek için bu formu doldur.
+  - type: input
+    id: handle
+    attributes:
+      label: Topluluk adresi
+      description: "`isim@instance` biçiminde yaz. Örnek: `anatolia@lemmy.world`"
+      placeholder: isim@instance.tld
+    validations:
+      required: true
+  - type: input
+    id: name
+    attributes:
+      label: Görünen isim
+      description: Boş bırakırsan topluluğun Lemmy'deki kendi adı kullanılır.
+      placeholder: Anatolia
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Açıklama
+      description: Topluluğu bir iki cümleyle anlat (opsiyonel).
+      placeholder: Türkiye ve Anadolu üzerine genel sohbet topluluğu.
+    validations:
+      required: false
+  - type: checkboxes
+    id: onay
+    attributes:
+      label: Onay
+      options:
+        - label: Bu topluluk Türkçe (ya da Türkiye ile ilgili) ve gerçekten var.
+          required: true
