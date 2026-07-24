@@ -31,7 +31,26 @@
       <p class="intro">Dağınık Türkçe Lemmy toplulukları için tek bir dizin.</p>
     </div>
 
-    <input id="search" type="search" placeholder="Topluluk ara…" autocomplete="off" aria-label="Topluluk ara">
+    <div class="controls">
+      <input id="search" type="search" placeholder="Topluluk ara…" autocomplete="off" aria-label="Topluluk ara">
+      <div id="sort" class="sort" hidden>
+        <span class="sort-label">Sırala</span>
+        <select id="sort-by" aria-label="Sıralama ölçütü">
+          <option value="name">İsim</option>
+          <option value="subs">Abone sayısı</option>
+          <option value="active">Aktiflik</option>
+          <option value="posts">Gönderi sayısı</option>
+          <option value="created">Oluşturulma tarihi</option>
+        </select>
+        <select id="sort-window" class="sort-window" aria-label="Aktiflik penceresi" hidden>
+          <option value="users_active_day">Gün</option>
+          <option value="users_active_week" selected>Hafta</option>
+          <option value="users_active_month">Ay</option>
+          <option value="users_active_half_year">6 ay</option>
+        </select>
+        <select id="sort-dir" aria-label="Sıralama yönü"></select>
+      </div>
+    </div>
 
     <ul id="list" class="grid">
       {{CARDS}}

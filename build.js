@@ -104,7 +104,7 @@ function renderCard(c) {
   const initial = c.name.charAt(0).toUpperCase();
   const searchText = `${c.name} ${c.copyHandle} ${c.description}`.toLocaleLowerCase("tr");
 
-  return `      <li class="item" data-search="${escapeHtml(searchText)}">
+  return `      <li class="item" data-search="${escapeHtml(searchText)}" data-name="${escapeHtml(c.name)}">
         <a class="card" href="/c/${escapeHtml(c.slug)}/">
           <span class="card-icon" data-api="${escapeHtml(c.apiUrl)}" data-initial="${escapeHtml(initial)}"></span>
           <span class="card-text">
