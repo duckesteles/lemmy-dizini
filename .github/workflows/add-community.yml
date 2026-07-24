@@ -34,13 +34,13 @@ jobs:
 
       - name: Commit to main
         env:
-          SLUG: ${{ steps.parse.outputs.slug }}
+          FILE: ${{ steps.parse.outputs.file }}
           HANDLE: ${{ steps.parse.outputs.handle }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "communities/${SLUG}.json"
+          git add "$FILE"
           if git diff --cached --quiet; then
             echo "Zaten mevcut, değişiklik yok."
           else
